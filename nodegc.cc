@@ -1,4 +1,4 @@
-#define BUILDING_NODE_EXTENSION
+#define BUILDING_NODE_EXTENSION 1
 #include <node.h>
 #include <string>
 #include <iostream>
@@ -86,11 +86,8 @@ Handle<Value> RunCallback(const Arguments& args) {
   }
   Local<Function> callback = Local<Function>::Cast(args[0]);
 
-  Baton* baton = new Baton();
-  baton->request.data = baton;
-  baton->callback = Persistent<Function>::New(callback);
-
-  nodegc::baton = *baton;
+  nodegc::baton.request.data = baton;
+  nodegc::baton.callback = Persistent<Function>::New(callback);
 
   V8::AddGCPrologueCallback(GCPrologueCb, kGCTypeAll);
   V8::AddGCEpilogueCallback(GCEpilogueCb, kGCTypeAll);
